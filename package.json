@@ -2,7 +2,8 @@
   "name": "lemonj",
   "version": "0.0.1",
   "description": "CSS/LESS/CSS Auto Refactor",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "bin": "dist/cli.js",
   "scripts": {
     "build": "node build.js"
   },
