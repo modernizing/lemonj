@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "description": "CSS/LESS/CSS Auto Refactor",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "build": "node build.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/twfe/lemonj.git"
@@ -13,7 +15,8 @@
       "name": "Phodal",
       "email": "h@phodal.com",
       "url": "https://www.phodal.com/"
-    },{
+    },
+    {
       "name": "LiuuY",
       "email": "mail4c9@gmail.com"
     }
@@ -22,5 +25,8 @@
   "bugs": {
     "url": "https://github.com/twfe/lemonj/issues"
   },
-  "homepage": "https://github.com/twfe/lemonj#readme"
+  "homepage": "https://github.com/twfe/lemonj#readme",
+  "devDependencies": {
+    "esbuild": "^0.8.10"
+  }
 }
