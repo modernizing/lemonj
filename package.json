@@ -27,9 +27,10 @@
   },
   "homepage": "https://github.com/twfe/lemonj#readme",
   "devDependencies": {
-    "esbuild": "^0.8.10"
+    "esbuild": "^0.8.10",
+    "prettier": "^2.1.2"
   },
-  "engines" : {
+  "engines": {
     "node": ">=10.0.0",
     "npm": ">=6.0.0"
   }
