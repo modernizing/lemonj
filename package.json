@@ -1,0 +1,26 @@
+{
+  "name": "lemonj",
+  "version": "0.0.1",
+  "description": "CSS/LESS/CSS Auto Refactor",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/twfe/lemonj.git"
+  },
+  "contributors": [
+    {
+      "name": "Phodal",
+      "email": "h@phodal.com",
+      "url": "https://www.phodal.com/"
+    },{
+      "name": "LiuuY",
+      "email": "mail4c9@gmail.com"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/twfe/lemonj/issues"
+  },
+  "homepage": "https://github.com/twfe/lemonj#readme"
+}
