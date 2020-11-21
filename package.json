@@ -1,11 +1,27 @@
 {
   "name": "lemonj",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "CSS/LESS/CSS Auto Refactor",
   "main": "dist/index.js",
   "bin": "dist/cli.js",
   "scripts": {
-    "build": "node build.js"
+    "test": "jest",
+    "build": "node build.js",
+    "run:exec": "npm run build && node dist/cli.js analysis _fixtures",
+    "run:refactor": "npm run build && node dist/cli.js refactor _fixtures"
+  },
+  "dependencies": {
+    "antlr4": "^4.8.0"
+  },
+  "devDependencies": {
+    "@types/antlr4": "^4.7.2",
+    "chroma": "0.0.1",
+    "chroma-js": "^2.1.0",
+    "commander": "^6.2.0",
+    "esbuild": "^0.8.8",
+    "esbuild-jest-transform": "^1.0.4",
+    "jest": "^26.6.3",
+    "prettier": "^2.1.2"
   },
   "repository": {
     "type": "git",
@@ -27,10 +43,6 @@
     "url": "https://github.com/twfe/lemonj/issues"
   },
   "homepage": "https://github.com/twfe/lemonj#readme",
-  "devDependencies": {
-    "esbuild": "^0.8.10",
-    "prettier": "^2.1.2"
-  },
   "engines": {
     "node": ">=10.0.0",
     "npm": ">=6.0.0"
