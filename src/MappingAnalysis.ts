@@ -1,9 +1,9 @@
 import antlr4 from 'antlr4/index';
-import {LessLexer} from './ast/LessLexer.js';
-import {LessParser} from './ast/LessParser.js';
-import {MappingListener} from "./MappingListener";
+import { LessLexer } from './ast/LessLexer.js';
+import { LessParser } from './ast/LessParser.js';
+import { MappingListener } from './MappingListener';
 
-export default function mappingAnalysis(input) {
+export default function mappingAnalysis(input: string) {
   let chars = new antlr4.InputStream(input);
   let lexer = new LessLexer(chars);
   let tokens = new antlr4.CommonTokenStream(lexer);
@@ -15,6 +15,6 @@ export default function mappingAnalysis(input) {
   listener.setMapping({});
   antlr4.tree.ParseTreeWalker.DEFAULT.walk(listener, tree);
   return {
-    mapping: listener.mapping
-  }
+    mapping: listener.mapping,
+  };
 }
