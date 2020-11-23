@@ -1,10 +1,12 @@
 #!/usr/bin/env node
+
+import { Command } from 'commander';
 import { analysisDir } from './Analysis';
 import { refactorDir } from './Refactor';
-import { Command } from 'commander';
+import pkg from '../package.json';
 
 const program = new Command();
-program.version('0.0.1');
+program.version(pkg.version);
 
 program
   .command('analysis <path>')
