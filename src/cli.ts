@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { analysisDir } from './Analysis';
 import { refactorDir } from './Refactor';
+import { Command } from 'commander';
 
-const { Command } = require('commander');
 const program = new Command();
 program.version('0.0.1');
 

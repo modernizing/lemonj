@@ -1,7 +1,8 @@
 import fs from 'fs';
 import path from 'path';
+import { Dir } from './dir';
 
-export function walkDir(dir: string, callback: (s: string) => any) {
+export function walkDir(dir: Dir, callback: (s: Dir) => any) {
   fs.readdirSync(dir).forEach((f) => {
     let dirPath = path.join(dir, f);
     let isDirectory = fs.statSync(dirPath).isDirectory();

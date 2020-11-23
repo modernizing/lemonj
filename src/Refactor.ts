@@ -1,7 +1,7 @@
+import fs from 'fs';
 import mappingAnalysis from './MappingAnalysis';
 import CodeFile from './editor/CodeFile';
-
-const fs = require('fs');
+import { Dir } from './dir';
 
 export function issueToModifyModel(issues, mappings) {
   let modifierInfo = [];
@@ -10,14 +10,14 @@ export function issueToModifyModel(issues, mappings) {
       line: issue.pos.start.line,
       column: issue.pos.start.column,
       length: issue.origin.length,
-      text: mappings[issue.origin]
-    })
+      text: mappings[issue.origin],
+    });
   }
 
   return modifierInfo;
 }
 
-export function refactorDir(mappingFile, issuesFile) {
+export function refactorDir(mappingFile: Dir, issuesFile: Dir) {
   const fileContents = fs.readFileSync(mappingFile, 'utf8');
   let mappings = mappingAnalysis(fileContents).mapping;
 
@@ -25,7 +25,7 @@ export function refactorDir(mappingFile, issuesFile) {
   const allIssues = JSON.parse(issues_text).issues;
 
   for (let metadata of allIssues) {
-    const data = fs.readFileSync(metadata.filePath, 'UTF-8');
+    const data = fs.readFileSync(metadata.filePath, 'utf8');
 
     let codeFile = new CodeFile(data);
     codeFile.batchLines(issueToModifyModel(metadata.issues, mappings));

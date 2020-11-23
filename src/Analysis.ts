@@ -1,11 +1,10 @@
-import {sortColors} from "./color/SortColor";
+import fs from 'fs';
+import { sortColors } from './color/SortColor';
+import { Dir } from './dir';
+import { walkDir } from './FileSupport';
+import refactorAnalysis from './RefactorAnalysis';
 
-const fs = require('fs');
-
-import {walkDir} from "./FileSupport";
-import refactorAnalysis from "./RefactorAnalysis";
-
-export function analysisDir(dir) {
+export function analysisDir(dir: Dir) {
   let data = {
     colorMappings: {},
     issues: [],
@@ -15,8 +14,8 @@ export function analysisDir(dir) {
     absolute: [],
     mediaQueries: [],
     colorFileMaps: {},
-    summary: {}
-  }
+    summary: {},
+  };
 
   let colorIndex = 1;
   walkDir(dir, function (filePath) {
@@ -50,13 +49,13 @@ export function analysisDir(dir) {
     issues: Object.keys(data.issues).length,
     mediaQueries: data.mediaQueries.length,
     absolute: data.absolute.length,
-    oddWidth: data.oddWidth.length
-  }
+    oddWidth: data.oddWidth.length,
+  };
 
-  fs.writeFileSync("results.json", JSON.stringify(data, null, '\t'));
+  fs.writeFileSync('results.json', JSON.stringify(data, null, '\t'));
 
   // fs.writeFileSync("mappings.less", buildMappings(data.colorMappings, data.colorFileMaps));
-  fs.writeFileSync("mappings.less", buildSortMapping(data));
+  fs.writeFileSync('mappings.less', buildSortMapping(data));
   return data;
 }
 

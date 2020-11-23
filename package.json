@@ -15,6 +15,7 @@
   },
   "devDependencies": {
     "@types/antlr4": "^4.7.2",
+    "@types/commander": "^2.12.2",
     "chroma": "0.0.1",
     "chroma-js": "^2.1.0",
     "commander": "^6.2.0",
