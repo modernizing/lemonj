@@ -8,7 +8,13 @@ describe('Files', function () {
 }`;
     let codeFile = new CodeFile(code);
 
-    codeFile.updateLine(1, 1, 2, 'h2');
+    codeFile.updateLine({
+      line: 1,
+      column: 1,
+      length: 2,
+      text: 'h2',
+    });
+
     assert.strictEqual(
       codeFile.toString(),
       `h2 {
