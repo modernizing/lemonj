@@ -24,7 +24,7 @@ describe('Nested', function () {
 
     let rootNode = result.lastNode;
     assert.strictEqual(rootNode.children[0].name, '.image-frame');
-    assert.strictEqual(rootNode.children[0].children[0].name, '> .description');
+    assert.strictEqual(rootNode.children[0].children[0].name, '>.description');
   });
   it('nested 2', function () {
     let result = refactorAnalysis(
