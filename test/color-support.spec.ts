@@ -1,6 +1,5 @@
-
 import assert from 'assert';
-import {ColorSupport} from '../src/';
+import { ColorSupport } from '../src';
 
 describe('Color Support', function () {
   it('3-digit to 6-digit hex', function () {
