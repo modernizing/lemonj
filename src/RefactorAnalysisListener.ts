@@ -2,14 +2,17 @@ import { CSS_COLOR_NAMES } from './CssColors';
 import { LessParserListener } from './ast/LessParserListener';
 import {
   CommandStatementContext,
-  LessParser,
   MeasurementContext,
+  MediaContext,
   PropertyContext,
   RulesetContext,
   SelectorContext,
   StatementContext,
 } from './ast/LessParser';
 import { Interval } from 'antlr4ts/misc/Interval';
+import { TerminalNode } from 'antlr4ts/tree/TerminalNode';
+import { ErrorNode } from 'antlr4ts/tree/ErrorNode';
+import { ParserRuleContext } from 'antlr4ts';
 
 let Checker = {
   hasColor: function (value) {
@@ -44,23 +47,30 @@ export interface MetaData {
   issues: Array<any>;
 }
 
+interface Node {
+  name: string;
+  selectors: Array<any>;
+  children: Array<any>;
+  parent?: Node;
+}
+
 export class RefactorAnalysisListener implements LessParserListener {
   metadata: MetaData;
   COLOR_MAPS = {};
   COLOR_FILE_MAPS = {};
   COLOR_INDEX = 0;
   BLOCK_STACKS = [];
-  lastNode = {
+  lastNode: Node = {
     name: 'root',
     selectors: [],
     children: [],
   };
 
-  setMetaData(data) {
+  setMetaData(data: MetaData) {
     this.metadata = data;
   }
 
-  enterMedia(ctx) {
+  enterMedia(ctx: MediaContext) {
     if (!this.metadata.mediaQueries) {
       this.metadata.mediaQueries = [];
     }
@@ -105,7 +115,7 @@ export class RefactorAnalysisListener implements LessParserListener {
     }
   }
 
-  exitStatement(ctx) {
+  exitStatement(ctx: StatementContext) {
     if (ctx.children && ctx.children[0] instanceof RulesetContext) {
       this.lastNode = this.lastNode.parent;
 
@@ -237,7 +247,7 @@ export class RefactorAnalysisListener implements LessParserListener {
     };
   }
 
-  isOdd(num) {
+  isOdd(num: number) {
     return num % 2;
   }
 
@@ -291,4 +301,8 @@ export class RefactorAnalysisListener implements LessParserListener {
   }
 
   exitStylesheet(ctx) {}
+  visitTerminal(node: TerminalNode) {}
+  visitErrorNode(node: ErrorNode) {}
+  enterEveryRule(ctx: ParserRuleContext) {}
+  exitEveryRule(ctx: ParserRuleContext) {}
 }

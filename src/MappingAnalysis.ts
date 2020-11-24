@@ -9,7 +9,6 @@ export default function mappingAnalysis(input: string) {
   let lexer = new LessLexer(chars);
   let tokens = new CommonTokenStream(lexer);
   let parser = new LessParser(tokens);
-  parser.buildParseTrees = true;
 
   let tree = parser.stylesheet();
   let listener = new MappingListener();
