@@ -3,8 +3,16 @@ import mappingAnalysis from './MappingAnalysis';
 import CodeFile from './editor/CodeFile';
 import { Dir } from './dir';
 
+export interface ModifierInfo {
+  line: number;
+  column: number;
+  length: number;
+  text: string;
+}
+
 export function issueToModifyModel(issues, mappings) {
-  let modifierInfo = [];
+  let modifierInfo: Array<ModifierInfo> = [];
+
   for (let issue of issues) {
     modifierInfo.push({
       line: issue.pos.start.line,

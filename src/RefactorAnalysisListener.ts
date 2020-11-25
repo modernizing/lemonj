@@ -1,15 +1,29 @@
-import {CSS_COLOR_NAMES} from "./CssColors";
-import {LessParserListener} from "./ast/LessParserListener";
-import {LessParser} from "./ast/LessParser";
+import { CSS_COLOR_NAMES } from './CssColors';
+import { LessParserListener } from './ast/LessParserListener';
+import {
+  CommandStatementContext,
+  MeasurementContext,
+  MediaContext,
+  PropertyContext,
+  RulesetContext,
+  SelectorContext,
+  StatementContext,
+} from './ast/LessParser';
+import { Interval } from 'antlr4ts/misc/Interval';
+import { TerminalNode } from 'antlr4ts/tree/TerminalNode';
+import { ErrorNode } from 'antlr4ts/tree/ErrorNode';
+import { ParserRuleContext } from 'antlr4ts';
 
 let Checker = {
   hasColor: function (value) {
-    return value.startsWith('#')
-      || CSS_COLOR_NAMES.includes(value.toLowerCase())
-      || value.startsWith('rgba')
-      || value.startsWith('rgb')
-      || value.startsWith('hsl')
-      || value.startsWith('hsla');
+    return (
+      value.startsWith('#') ||
+      CSS_COLOR_NAMES.includes(value.toLowerCase()) ||
+      value.startsWith('rgba') ||
+      value.startsWith('rgb') ||
+      value.startsWith('hsl') ||
+      value.startsWith('hsla')
+    );
   },
   hasImportant: function (value) {
     return value.includes('!important');
@@ -19,26 +33,44 @@ let Checker = {
   },
   hasAbsolute: function (value) {
     return value.includes('absolute');
-  }
+  },
+};
+
+export interface MetaData {
+  fileName: string;
+  filePath: string;
+  fontFamily: Array<any>;
+  importants: Array<any>;
+  mediaQueries: Array<object>;
+  oddWidth: Array<any>;
+  absolute: Array<any>;
+  issues: Array<any>;
 }
 
-export class RefactorAnalysisListener extends LessParserListener {
-  metadata = {};
+interface Node {
+  name: string;
+  selectors: Array<any>;
+  children: Array<any>;
+  parent?: Node;
+}
+
+export class RefactorAnalysisListener implements LessParserListener {
+  metadata: MetaData;
   COLOR_MAPS = {};
   COLOR_FILE_MAPS = {};
   COLOR_INDEX = 0;
   BLOCK_STACKS = [];
-  lastNode = {
+  lastNode: Node = {
     name: 'root',
     selectors: [],
-    children: []
+    children: [],
   };
 
-  setMetaData(data) {
+  setMetaData(data: MetaData) {
     this.metadata = data;
   }
 
-  enterMedia(ctx) {
+  enterMedia(ctx: MediaContext) {
     if (!this.metadata.mediaQueries) {
       this.metadata.mediaQueries = [];
     }
@@ -47,20 +79,22 @@ export class RefactorAnalysisListener extends LessParserListener {
       type: '@media',
       file: this.metadata.filePath,
       start: ctx.start.line,
-      end: ctx.stop.line
-    })
+      end: ctx.stop.line,
+    });
   }
 
-  enterStatement(ctx) {
-    if (ctx.children && ctx.children[0] instanceof LessParser.RulesetContext) {
-      let selectors = ctx.children[0].children[0];
-      let selector_text = this.getOriginText(selectors);
+  enterStatement(ctx: StatementContext) {
+    if (ctx.children && ctx.children[0] instanceof RulesetContext) {
+      let selectors = ctx.children[0].getChild(0);
+      let selector_text = selectors.text;
 
       let selectors_array = [];
-      for (let selector of selectors.children) {
-        if (selector instanceof LessParser.SelectorContext) {
+      let index = 0;
+      for (; index < selectors.childCount; index++) {
+        let selector = selectors.getChild(index);
+        if (selector instanceof SelectorContext) {
           for (let ele of selector.element()) {
-            selectors_array.push(ele.getText());
+            selectors_array.push(ele);
           }
         }
       }
@@ -71,8 +105,8 @@ export class RefactorAnalysisListener extends LessParserListener {
         parent: this.lastNode,
         selectors: selectors_array,
         pos,
-        children: []
-      }
+        children: [],
+      };
 
       this.lastNode.children.push(node);
       this.lastNode = node;
@@ -81,18 +115,18 @@ export class RefactorAnalysisListener extends LessParserListener {
     }
   }
 
-  exitStatement(ctx) {
-    if (ctx.children && ctx.children[0] instanceof LessParser.RulesetContext) {
+  exitStatement(ctx: StatementContext) {
+    if (ctx.children && ctx.children[0] instanceof RulesetContext) {
       this.lastNode = this.lastNode.parent;
 
       this.BLOCK_STACKS.pop();
     }
   }
 
-  enterProperty(ctx) {
-    let propertyKey = ctx.children[0].getText();
+  enterProperty(ctx: PropertyContext) {
+    let propertyKey = ctx.children[0].text;
     let valuesExpr = ctx.children[2];
-    let propertyValue = valuesExpr.getText();
+    let propertyValue = valuesExpr.text;
 
     if (Checker.hasImportant(propertyValue)) {
       if (!this.metadata.importants) {
@@ -102,8 +136,8 @@ export class RefactorAnalysisListener extends LessParserListener {
       this.metadata.importants.push({
         type: '!important',
         file: this.metadata.filePath,
-        line: valuesExpr.start.line
-      })
+        line: ctx._start.line,
+      });
     }
 
     switch (propertyKey) {
@@ -129,27 +163,29 @@ export class RefactorAnalysisListener extends LessParserListener {
       case 'box-shadow':
       case '-webkit-box-shadow':
       case '-moz-box-shadow':
-        if (!valuesExpr.children) {
+        if (!valuesExpr.childCount) {
           return;
         }
 
-        for (let valueChild of valuesExpr.children) {
-          if (valueChild instanceof LessParser.CommandStatementContext) {
+        let index = 0;
+        for (; index < valuesExpr.childCount; index++) {
+          let valueChild = valuesExpr.getChild(index);
+          if (valueChild instanceof CommandStatementContext) {
             for (let child of valueChild.children) {
-              if (Checker.hasColor(child.getText())) {
+              if (Checker.hasColor(child.text)) {
                 this.append_issue(child, 'color');
                 this.updateColorMap(child);
               }
             }
           } else {
-            if (Checker.hasColor(valueChild.getText())) {
+            if (Checker.hasColor(valueChild.text)) {
               this.append_issue(valueChild, 'color');
               this.updateColorMap(valueChild);
             }
           }
         }
         break;
-      case "font-family":
+      case 'font-family':
         if (!this.metadata.fontFamily) {
           this.metadata.fontFamily = [];
         }
@@ -159,15 +195,15 @@ export class RefactorAnalysisListener extends LessParserListener {
           type: 'font-family',
           origin: this.getOriginText(valuesExpr, false),
           file: this.metadata.filePath,
-          pos
-        })
+          pos,
+        });
         break;
 
       case 'position':
         if (!Checker.hasAbsolute(propertyValue)) {
           return;
         }
-        this.metadata.absolute.push(this.buildItem(valuesExpr, 'absolute'))
+        this.metadata.absolute.push(this.buildItem(valuesExpr, 'absolute'));
         break;
 
       case 'width':
@@ -176,11 +212,11 @@ export class RefactorAnalysisListener extends LessParserListener {
         }
 
         // commandStatement -> expression -> measurement;
-        let measurement = valuesExpr.children[0].children[0].children[0];
-        if (measurement instanceof LessParser.MeasurementContext) {
-          let number = measurement.children[0].getText();
+        let measurement = valuesExpr.getChild(0).getChild(0).getChild(0);
+        if (measurement instanceof MeasurementContext) {
+          let number = measurement.getChild(0).text;
           if (this.isOdd(parseInt(number, 10))) {
-            this.metadata.oddWidth.push(this.buildItem(valuesExpr, 'oddWidth'))
+            this.metadata.oddWidth.push(this.buildItem(valuesExpr, 'oddWidth'));
           }
         }
         break;
@@ -202,16 +238,16 @@ export class RefactorAnalysisListener extends LessParserListener {
     return {
       start: {
         line: expr.start.line,
-        column: expr.start.column + editor_offset,
+        column: expr.start.charPositionInLine + editor_offset,
       },
       end: {
         line: expr.stop.line,
-        column: expr.stop.column,
+        column: expr.stop.charPositionInLine,
       },
     };
   }
 
-  isOdd(num) {
+  isOdd(num: number) {
     return num % 2;
   }
 
@@ -236,41 +272,37 @@ export class RefactorAnalysisListener extends LessParserListener {
     this.metadata.issues.push({
       type: type,
       origin: this.getOriginText(node, type === 'color'),
-      pos
-    })
+      pos,
+    });
   }
-  //
-  // isColor(strColor) {
-  //   const s = new Option().style;
-  //   s.color = strColor;
-  //   const test1 = s.color === strColor;
-  //   const test2 = /^#[0-9A-F]{6}$/i.test(strColor);
-  //   return test1 === true || test2 === true;
-  // }
 
-  getOriginText(node, isColor) {
-    let inputStream = node.start.getInputStream();
+  getOriginText(node, isColor?) {
+    let inputStream = node.start.inputStream;
+
     if (!inputStream) {
-      return node.getText();
+      return node.text;
     }
 
-    let text = inputStream.getText(node.start.start, node.stop.stop);
+    let text = inputStream.getText(new Interval(node.start.startIndex, node.stop.stopIndex));
+
     if (isColor && Checker.hasImportant(text)) {
       // commandStatement -> expression -> Color
-      let color = node.children[0].children[0].children[0];
+      let color = node.getChild(0).getChild(0).getChild(0);
       if (color.symbol) {
         // color: #ddddd !important
-        return inputStream.getText(color.symbol.start, color.symbol.stop)
+        return inputStream.getText(new Interval(color.symbol.start, color.symbol.stop));
       } else {
         // color: white !important
-        return inputStream.getText(color.start.start, color.start.stop)
+        return inputStream.getText(new Interval(color.start.start, color.start.stop));
       }
     }
 
     return text;
   }
 
-  exitStylesheet(ctx) {
-
-  }
+  exitStylesheet(ctx) {}
+  visitTerminal(node: TerminalNode) {}
+  visitErrorNode(node: ErrorNode) {}
+  enterEveryRule(ctx: ParserRuleContext) {}
+  exitEveryRule(ctx: ParserRuleContext) {}
 }

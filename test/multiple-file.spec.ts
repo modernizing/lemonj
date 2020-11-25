@@ -1,5 +1,5 @@
 import assert from 'assert';
-import {analysisDir} from '../src';
+import { analysisDir } from '../src';
 
 describe('Files', function () {
   it('file testings', function () {

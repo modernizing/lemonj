@@ -1,22 +1,26 @@
 {
   "name": "lemonj",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "CSS/LESS/CSS Auto Refactor",
   "main": "dist/index.js",
   "bin": "dist/cli.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --clearCache; jest",
     "build": "node build.js",
+    "less-grammar": "antlr4ts -visitor lang/*",
+    "antlr4ts": "antlr4ts -visitor lang/LessLexer.g4",
     "run:exec": "npm run build && node dist/cli.js analysis _fixtures",
     "run:refactor": "npm run build && node dist/cli.js refactor _fixtures"
   },
   "dependencies": {
-    "antlr4": "^4.8.0"
+    "antlr4ts": "^0.5.0-alpha.3"
   },
   "devDependencies": {
-    "@types/antlr4": "^4.7.2",
+    "@types/chroma-js": "^2.1.2",
     "@types/commander": "^2.12.2",
     "@types/jest": "^26.0.15",
+    "antlr4ts-cli": "^0.5.0-alpha.3",
+    "assert": "^2.0.0",
     "chroma": "0.0.1",
     "chroma-js": "^2.1.0",
     "commander": "^6.2.0",
