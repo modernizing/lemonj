@@ -1,43 +1,43 @@
-# CSS/LESS/SCSS Auto Refactor
+# 🍋 lemonj
 
-Features:
+CSS/LESS/SCSS 自动重构、坏味道检查工具。
 
-- [x] Color refactor
-  - [x] analysis colors
-  - [x] auto-refactor colors
-- [ ] 3+ level class nested Refactor
-  - [ ] analysis 3+ level nested
-  - [ ] process 3+ level nested
-- [ ] selector auto folding. `.level1.level2{}` to `.level1{.level2}}`
-  - [ ] analysis need to merge selector
-  - [ ] refactor selector
-- [ ] sort `colors.less` by colors
-- [ ] Summary
-  - [x] fontFamily
-  - [x] colors
-  - [x] importants
-  - [x] mediaQueries
-  - [x] is-odd-width
-  - [x] absolute
+## 💡 Features:
 
-Todo:
+- 重构
+  - CSS 颜色自动抽离重构变量
+- 坏味道
+  - 字体
+  - 奇数宽度
+  - `importants`
+  - `position: absolute`
+  - `mediaQueries`
 
-- [ ] command split
-  - [ ] Split `color` refactor as subcommand
-- [ ] migration to TypeScript
-  - [ ] split ast packages
-  - [ ] use lerna
-  - [x] use esbuild
-
-## Refactor Color
-
-1. analysis files
+## 📦 Install
 
 ```
-node dist/cli.js analysis _fixtures
+npm install lemonj
 ```
 
-2. modify `mappings.less` to current vars
+或者
+
+```
+yarn add lemonj
+```
+
+## 🌰 Demo
+
+### CSS 颜色自动抽离变量
+
+我们要重构 `\_fixtures` 文件夹下 `less` 样式文件：
+
+1. 分析文件
+
+```
+lemonj analysis _fixtures
+```
+
+2. 每种颜色都有一个变量在 `mappings.less` 中，你可以修改对应的颜色：
 
 ```less
 // _fixtures/less/color/border.less
@@ -62,37 +62,36 @@ node dist/cli.js analysis _fixtures
 @color9: #000000;
 ```
 
-3. run refactoring
+3. 运行重构命令：
 
 ```
-node dist/cli.js refactor _fixtures
+lemonj refactor _fixtures
 ```
 
-## Todo
+此时每个写死的颜色，都抽离到变量中。
 
-### Change to Less API
+## 🛣️ RoadMap:
 
-```javascript
-var less = require('less'),
-  fs = require('fs'),
-  path = require('path');
-
-var src = './test_import.less';
-var result = less.parse(
-  fs.readFileSync(src).toString(),
-  {
-    filename: path.resolve(src),
-  },
-  function (e, tree) {
-    console.log(JSON.stringify(tree, null, 2));
-  }
-);
-```
-
-## Refs
-
-1. [CSS structure](https://rscss.io/css-structure.html)
-
-## related
-
-1. [CSSO](https://github.com/css/csso) is a CSS minifier. It performs three sort of transformations: cleaning (removing redundant), compression (replacement for shorter form) and restructuring (merge of declarations, rulesets and so on). As a result your CSS becomes much smaller.
+- [x] Color refactor
+  - [x] analysis colors
+  - [x] auto-refactor colors
+- [ ] 3+ level class nested Refactor
+  - [ ] analysis 3+ level nested
+  - [ ] process 3+ level nested
+- [ ] selector auto folding. `.level1.level2{}` to `.level1{.level2}}`
+  - [ ] analysis need to merge selector
+  - [ ] refactor selector
+- [ ] sort `colors.less` by colors
+- [ ] Summary
+  - [x] fontFamily
+  - [x] colors
+  - [x] importants
+  - [x] mediaQueries
+  - [x] is-odd-width
+  - [x] absolute
+- [ ] command split
+  - [ ] Split `color` refactor as subcommand
+- [ ] migration to TypeScript
+  - [ ] split ast packages
+  - [ ] use lerna
+  - [x] use esbuild
