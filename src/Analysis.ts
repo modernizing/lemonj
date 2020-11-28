@@ -52,6 +52,8 @@ export function analysisDir(dir: Dir) {
     oddWidth: data.oddWidth.length,
   };
 
+  console.log('Code Smell: ', data.summary);
+
   fs.writeFileSync('results.json', JSON.stringify(data, null, '\t'));
 
   // fs.writeFileSync("mappings.less", buildMappings(data.colorMappings, data.colorFileMaps));

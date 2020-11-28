@@ -37,7 +37,20 @@ yarn add lemonj
 lemonj analysis _fixtures
 ```
 
-2. 每种颜色都有一个变量在 `mappings.less` 中，你可以修改对应的颜色：
+输出代码坏味道：
+
+```
+Code Smell:  {
+  colors: 24,
+  importants: 4,
+  issues: 8,
+  mediaQueries: 1,
+  absolute: 0,
+  oddWidth: 1
+}
+```
+
+2. 每种颜色都重构为一个变量在 `mappings.less` 中，你可以修改对应的颜色：
 
 ```less
 // _fixtures/less/color/border.less

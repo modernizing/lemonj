@@ -1,6 +1,6 @@
 import chroma from 'chroma-js';
 
-type Color = string | number;
+type Color = string;
 
 export function colorDistance(color1: Color, color2: Color) {
   return chroma.distance(chroma(color1).hex(), chroma(color2).hex());
