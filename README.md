@@ -16,13 +16,13 @@ CSS/LESS/SCSS 自动重构、坏味道检查工具。
 ## 📦 Install
 
 ```
-npm install lemonj
+npm install lemonj -g
 ```
 
 或者
 
 ```
-yarn add lemonj
+yarn global add lemonj
 ```
 
 ## 🌰 Demo
