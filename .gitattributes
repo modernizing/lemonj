@@ -1,1 +1,2 @@
 src/ast/** linguist-vendored=true
+_fixtures/** linguist-vendored=true
