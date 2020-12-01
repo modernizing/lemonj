@@ -287,7 +287,16 @@ export class RefactorAnalysisListener implements LessParserListener {
 
     if (isColor && Checker.hasImportant(text)) {
       // commandStatement -> expression -> Color
-      let color = node.getChild(0).getChild(0).getChild(0);
+      let cmdStmt = node.getChild(0);
+      if (!cmdStmt) {
+        return cmdStmt.getText();
+      }
+
+      if (cmdStmt.constructor.name.includes("TerminalNode")) {
+        return cmdStmt.toString();
+      }
+
+      let color = cmdStmt.getChild(0).getChild(0);
       if (color.symbol) {
         // color: #ddddd !important
         return inputStream.getText(new Interval(color.symbol.start, color.symbol.stop));
