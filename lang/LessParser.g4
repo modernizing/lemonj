@@ -176,7 +176,7 @@ negation
    ;
 
 pseudo
-   : (COLON | COLONCOLON) Identifier
+   : ':' ':'? Identifier
    ;
 
 element
@@ -185,6 +185,7 @@ element
    | '#' identifier
    | pseudo
    | negation
+   | Identifier '[' Identifier ']'
    | PARENTREF
    | '*'
    ;
