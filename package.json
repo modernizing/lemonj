@@ -1,6 +1,6 @@
 {
   "name": "lemonj",
-  "version": "0.2.2",
+  "version": "0.2.0",
   "description": "CSS/LESS/CSS Auto Refactor",
   "main": "dist/index.js",
   "bin": "dist/cli.js",
