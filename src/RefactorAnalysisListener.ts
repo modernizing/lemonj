@@ -146,7 +146,7 @@ export class RefactorAnalysisListener implements LessParserListener {
       case 'border-color':
       case 'background':
         if (Checker.hasColor(this.getOriginText(valuesExpr, true))) {
-          this.append_issue(valuesExpr, 'color');
+          this.appendIssue(valuesExpr, 'color');
           this.updateColorMap(valuesExpr);
         }
         break;
@@ -173,13 +173,13 @@ export class RefactorAnalysisListener implements LessParserListener {
           if (valueChild instanceof CommandStatementContext) {
             for (let child of valueChild.children) {
               if (Checker.hasColor(child.text)) {
-                this.append_issue(child, 'color');
+                this.appendIssue(child, 'color');
                 this.updateColorMap(child);
               }
             }
           } else {
             if (Checker.hasColor(valueChild.text)) {
-              this.append_issue(valueChild, 'color');
+              this.appendIssue(valueChild, 'color');
               this.updateColorMap(valueChild);
             }
           }
@@ -266,7 +266,7 @@ export class RefactorAnalysisListener implements LessParserListener {
     }
   }
 
-  append_issue(node, type) {
+  appendIssue(node, type) {
     // todo: make get from input
     let pos = this.buildPos(node);
     this.metadata.issues.push({
