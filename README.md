@@ -106,7 +106,6 @@ lemonj refactor _fixtures
   - [ ] Split `color` refactor as subcommand
 - [ ] migration to TypeScript
   - [ ] split ast packages
-  - [ ] use lerna
   - [x] use esbuild
 
 License
