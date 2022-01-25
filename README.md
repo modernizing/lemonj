@@ -108,3 +108,8 @@ lemonj refactor _fixtures
   - [ ] split ast packages
   - [ ] use lerna
   - [x] use esbuild
+
+License
+---
+
+This code is distributed under the MPL license. See `LICENSE` in this directory.
